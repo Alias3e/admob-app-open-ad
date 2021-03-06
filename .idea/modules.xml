@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/admob_app_open_ad.iml" filepath="$PROJECT_DIR$/admob_app_open_ad.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/admob_app_open_ad_android.iml" filepath="$PROJECT_DIR$/android/admob_app_open_ad_android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/example/android/admob_app_open_ad_example_android.iml" filepath="$PROJECT_DIR$/example/android/admob_app_open_ad_example_android.iml" />
+    </modules>
+  </component>
+</project>
