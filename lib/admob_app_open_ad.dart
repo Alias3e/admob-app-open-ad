@@ -1,10 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/services.dart';
 
 class AdmobAppOpenAd {
   static const MethodChannel _channel =
       const MethodChannel('admob_app_open_ad');
 
-  final Map<String, Object> targetingInfo;
+  final Map<String, Object>? targetingInfo;
   final Duration expiry;
   final String admobAppId;
   final String adUnitId;
@@ -14,7 +16,7 @@ class AdmobAppOpenAd {
   AdmobAppOpenAd(
     this.admobAppId, {
     this.targetingInfo,
-    this.expiry,
+    this.expiry = const Duration(hours: 4),
     this.adUnitId = APP_OPEN_AD_TEST_ID,
     this.showAdWheneverOnStart = false,
   }) {
