@@ -14,7 +14,7 @@ class ManagerOptions private constructor(
             var showAdWheneverOnStart: Boolean = false
     ) {
 
-        fun targetingInfo(targetingInfo: Map<String, Any>) = apply { this.targetingInfo = targetingInfo }
+        fun targetingInfo(admobOptions: Map<String, Any>) = apply { this.targetingInfo = admobOptions }
         fun expiry(expiry: Long) = apply { this.expiry = expiry }
         fun adUnitId(adUnitId: String) = apply { this.adUnitId = adUnitId }
         fun showAdWheneverOnStart(showAdWheneverOnStart: Boolean) = apply { this.showAdWheneverOnStart = showAdWheneverOnStart }

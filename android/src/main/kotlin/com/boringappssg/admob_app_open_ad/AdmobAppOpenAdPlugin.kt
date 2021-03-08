@@ -5,6 +5,7 @@ import android.content.Context
 import android.util.Log
 import androidx.annotation.NonNull
 import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.RequestConfiguration
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
@@ -14,6 +15,7 @@ import io.flutter.plugin.common.MethodChannel.Result
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.lang.Exception
 
 /** AdmobAppOpenAdPlugin */
 class AdmobAppOpenAdPlugin : FlutterPlugin, MethodCallHandler {
@@ -52,8 +54,33 @@ class AdmobAppOpenAdPlugin : FlutterPlugin, MethodCallHandler {
                 val showAdWheneverOnStart = call.argument<Boolean>("showAdWheneverOnStart")
                 if (showAdWheneverOnStart != null)
                     builder.showAdWheneverOnStart(showAdWheneverOnStart)
-                val options = builder.build()
-                appOpenAdManager.options = options
+                appOpenAdManager.options = builder.build()
+
+                val requestConfiguration = call.argument<Map<String, Any>>("requestConfigurations")
+                if (requestConfiguration != null && requestConfiguration.isNotEmpty()) {
+                    val requestConfigBuilder = RequestConfiguration.Builder();
+                    if (requestConfiguration.containsKey("testDeviceIds")) {
+                        val testDeviceIds: List<String> = (requestConfiguration["testDeviceIds"] as List<*>).map { it as String }
+                        requestConfigBuilder.setTestDeviceIds(testDeviceIds)
+                    }
+
+                    if (requestConfiguration.containsKey("maxAdContentRating"))
+                        requestConfigBuilder.setMaxAdContentRating(requestConfiguration["maxAdContentRating"] as String)
+
+                    if (requestConfiguration.containsKey("tagForChildDirectedTreatment"))
+                        requestConfigBuilder.setTagForChildDirectedTreatment(requestConfiguration["tagForChildDirectedTreatment"] as Int)
+
+                    if (requestConfiguration.containsKey("tagForUnderAgeOfConsent"))
+                        requestConfigBuilder.setTagForUnderAgeOfConsent(requestConfiguration["tagForUnderAgeOfConsent"] as Int)
+
+                    try {
+                        MobileAds.setRequestConfiguration(requestConfigBuilder.build())
+                    } catch (e: Exception) {
+                        Log.i("ERROR", e.message!!)
+                        e.printStackTrace()
+                    }
+
+                }
             }
             "fetchAd" -> {
                 CoroutineScope(Dispatchers.Main).launch {
