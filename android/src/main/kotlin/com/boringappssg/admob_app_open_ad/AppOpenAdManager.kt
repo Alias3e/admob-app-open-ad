@@ -43,7 +43,9 @@ class AppOpenAdManager constructor(
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun onStart() {
         Log.i("AppOpenManager", "onStart()")
-        showAd()
+        CoroutineScope(Dispatchers.Main).launch {
+            showAd()
+        }
     }
 
 
@@ -59,33 +61,24 @@ class AppOpenAdManager constructor(
                     myApplication, options?.adUnitId, request,
                     AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT, object : AppOpenAd.AppOpenAdLoadCallback() {
 
-                /**
-                 * Called when an app open ad has loaded.
-                 *
-                 * @param ad the loaded app open ad.
-                 */
-                override fun onAppOpenAdLoaded(ad: AppOpenAd) {
-                    Log.i(LOG_TAG, "onAppOpenAdLoaded")
+                override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                    // Handle the error.
+                    Log.i("ARKNIGHTS_HR", "AD FAIL TO LOAD")
+                    cont.resume(false)
+                }
+
+                override fun onAdLoaded(ad: AppOpenAd) {
+                    super.onAdLoaded(ad)
                     this@AppOpenAdManager.appOpenAd = ad
                     this@AppOpenAdManager.loadTime = Date().time
                     cont.resume(true)
-                }
-
-                /**
-                 * Called when an app open ad has failed to load.
-                 *
-                 * @param loadAdError the error.
-                 */
-                override fun onAppOpenAdFailedToLoad(loadAdError: LoadAdError?) {
-                    // Handle the error.
-                    cont.resume(false)
                 }
             })
         }
 
     }
 
-    fun showAd() {
+    suspend fun showAd(): Boolean = suspendCoroutine { cont ->
         if (options == null)
             throw Exception("App Open Ad not initialized.")
         else {
@@ -101,12 +94,14 @@ class AppOpenAdManager constructor(
                     }
 
                     override fun onAdFailedToShowFullScreenContent(adError: AdError?) {
+                        cont.resume(false)
                         if (adError != null)
                             Log.i(LOG_TAG, adError.message)
                     }
 
                     override fun onAdShowedFullScreenContent() {
                         isShowingAd = true
+                        cont.resume(true)
                     }
                 }
                 appOpenAd?.fullScreenContentCallback = fullScreenContentCallback

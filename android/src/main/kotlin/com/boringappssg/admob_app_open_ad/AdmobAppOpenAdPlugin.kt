@@ -89,7 +89,11 @@ class AdmobAppOpenAdPlugin : FlutterPlugin, MethodCallHandler {
                 }
             }
             "showAd" -> {
-                appOpenAdManager.showAd()
+                CoroutineScope(Dispatchers.Main).launch {
+                    val showAdSuccess = appOpenAdManager.showAd()
+                    result.success(showAdSuccess)
+                }
+
             }
             else -> {
                 result.notImplemented()
